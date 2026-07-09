@@ -23,7 +23,6 @@ env:
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
   SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
   SUPPORT_MAIL_ADDRESS: ${{ secrets.SUPPORT_MAIL_ADDRESS }}
-  HETZNER_USER: ${{ secrets.HETZNER_USER || 'root' }}
 
 jobs:
   build:
@@ -59,11 +58,11 @@ jobs:
 
       - name: Upload image to Hetzner
         if: github.event_name == 'push'
-        uses: easingthemes/ssh-deploy@v5.1.0
+        uses: easingthemes/ssh-deploy@v6.0.1
         with:
           SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.HETZNER_HOST }}
-          REMOTE_USER: ${{ env.HETZNER_USER }}
+          REMOTE_USER: root
           REMOTE_PORT: ${{ secrets.HETZNER_PORT || '22' }}
           SOURCE: deploy/
           TARGET: ${{ secrets.HETZNER_DEPLOY_PATH }}
@@ -87,7 +86,7 @@ jobs:
           ORIGINS_ALLOWED: ${{ secrets.ORIGINS_ALLOWED }}
         with:
           host: ${{ secrets.HETZNER_HOST }}
-          username: ${{ env.HETZNER_USER }}
+          username: root
           key: ${{ secrets.HETZNER_SSH_KEY }}
           port: ${{ secrets.HETZNER_PORT || '22' }}
           envs: APP_NAME,IMAGE_NAME,APP_PORT,TARGET,DOCKER_NETWORK,SPRING_LIQUIBASE_CHANGE_LOG,SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,JWT_ACTION_EXPIRATION,JWT_ACCESS_EXPIRATION,JWT_REFRESH_EXPIRATION,JWT_SECRET,TELEGRAM_TOKEN,REGISTRATION_CONFIRMATION_LINK,PASSWORD_RESET_CONFIRMATION_LINK,ACTION_ERROR_LINK,GET_RANDOM_PASSWORD_REDIRECT_LINK,SERVER_PATH,ORIGINS_ALLOWED,SENDER_EMAIL_ADDRESS,RESEND_API_KEY,SUPPORT_MAIL_ADDRESS
