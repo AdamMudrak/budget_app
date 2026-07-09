@@ -1,0 +1,49 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-moneta_db}
+      MYSQL_USER: ${SPRING_DATASOURCE_USERNAME:-moneta_user}
+      MYSQL_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-moneta_pass}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  app:
+    build:
+      context: .
+    environment:
+      SERVER_PORT: "8081"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-moneta_db}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-moneta_user}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-moneta_pass}
+      JWT_ACTION_EXPIRATION: ${JWT_ACTION_EXPIRATION:-600000}
+      JWT_ACCESS_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-900000}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
+      JWT_SECRET: ${JWT_SECRET:-local-development-jwt-secret-at-least-32-bytes}
+      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN:-local-telegram-token}
+      REGISTRATION_CONFIRMATION_LINK: ${REGISTRATION_CONFIRMATION_LINK:-http://localhost:8081/auth/register-success}
+      PASSWORD_RESET_CONFIRMATION_LINK: ${PASSWORD_RESET_CONFIRMATION_LINK:-http://localhost:8081/auth/reset-password}
+      ACTION_ERROR_LINK: ${ACTION_ERROR_LINK:-http://localhost:8081}
+      GET_RANDOM_PASSWORD_REDIRECT_LINK: ${GET_RANDOM_PASSWORD_REDIRECT_LINK:-http://localhost:8081}
+      SERVER_PATH: ${SERVER_PATH:-http://localhost:8081}
+      ORIGINS_ALLOWED: ${ORIGINS_ALLOWED:-http://localhost:3000}
+      SENDER_EMAIL_ADDRESS: ${SENDER_EMAIL_ADDRESS:-no-reply@example.com}
+      RESEND_API_KEY: ${RESEND_API_KEY:-local-resend-api-key}
+      SUPPORT_MAIL_ADDRESS: ${SUPPORT_MAIL_ADDRESS:-support@example.com}
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
