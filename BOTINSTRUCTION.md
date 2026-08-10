@@ -1,43 +1,63 @@
 # Setting Up a Telegram Bot with BotFather
 
-Follow these steps to create a Telegram bot using **BotFather** and obtain its API token.
+Local startup does not require a real Telegram bot. The provided `.env.sample`
+disables Telegram registration with:
 
-## Step 1: Start a Chat with BotFather
-1. Open Telegram and search for **BotFather** or open it [here](https://t.me/BotFather).
-2. Start a conversation by clicking **Start**.
-
-## Step 2: Create a New Bot
-Copy and paste the following message into the chat with BotFather:
-
+```text
+TELEGRAM_BOT_ENABLED=false
 ```
+
+Use this guide only when you want to test the real Telegram login flow.
+
+## Step 1: Start a chat with BotFather
+
+1. Open Telegram and search for **BotFather**, or open <https://t.me/BotFather>.
+2. Start the conversation.
+
+## Step 2: Create a new bot
+
+Send:
+
+```text
 /newbot
 ```
 
-- BotFather will ask for a **name** and a **username** for your bot.
-- The **bot name** can be anything (e.g., MonetaBot).
-- The **username** must be unique and end with `bot` (e.g., MonetaFinanceBot).
+BotFather will ask for:
 
-After completing this step, **BotFather will provide an API token**. **Save this token securely!**
+- bot name, for example `MonetaBot`;
+- bot username, which must be unique and end with `bot`, for example
+  `MonetaFinanceBot`.
 
-## Step 3: Set Commands for Your Bot
-To define commands (`/start` and `/stop`), send the following message:
+After creation, BotFather will provide an API token. Store it securely and do
+not commit it.
 
-```
+## Step 3: Set commands
+
+Send:
+
+```text
 /setcommands
 ```
 
-- Select your bot from the list.
-- Enter the following commands:
-  ```
-  start - Start the bot
-  stop - Stop the bot
-  ```
+Select your bot and enter:
 
-Now your bot has the `/start` and `/stop` commands registered.
+```text
+start - Start the bot
+stop - Stop the bot
+```
 
-## Step 4: Use the API Token
-Once you receive the bot token, you can use it in your **Spring Boot** application to connect with Telegram’s API.
+## Step 4: Enable the bot in the app
 
----
+Set these environment variables:
 
-Your Telegram bot is now set up and ready to use! 🚀
+```text
+TELEGRAM_BOT_ENABLED=true
+TELEGRAM_TOKEN=<real bot token>
+```
+
+For normal local development without Telegram, leave:
+
+```text
+TELEGRAM_BOT_ENABLED=false
+TELEGRAM_TOKEN=local-telegram-token
+```
