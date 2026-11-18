@@ -165,7 +165,7 @@ jobs:
               -e SENDER_EMAIL_ADDRESS="$SENDER_EMAIL_ADDRESS" \
               -e RESEND_API_KEY="$RESEND_API_KEY" \
               -e SUPPORT_MAIL_ADDRESS="$SUPPORT_MAIL_ADDRESS" \
-              -p "$APP_PORT:$APP_PORT" \
+              -p "127.0.0.1:$APP_PORT:$APP_PORT" \
               "$IMAGE_NAME:latest"
 
             rm -f "$TARGET/$APP_NAME.tar"
